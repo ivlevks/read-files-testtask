@@ -1,111 +1,150 @@
 package org.example;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Main {
 
     private static String ORDERING;
-    private static List<Integer> errorValue = new ArrayList<>();
+    private static String TYPEDATA;
+    private static List<Integer> errorValueInteger = new ArrayList<>();
+    private static List<String> errorValueString = new ArrayList<>();
 
     public static void main(String[] args) {
 
         ORDERING = "ASC";
-        List<List<Integer>> list = new ArrayList<>();
+        TYPEDATA = "STRING";
 
         // обработать если список только 1
-        list.add(Arrays.asList(1, 2, 3, 0, -1, 6, 123, 56789, 1235435435));
-        list.add(Arrays.asList(36, 35, 34, 2123));
-        list.add(Arrays.asList(145, 167, 312, 480, 512));
-        list.add(Arrays.asList(20, 20, 30, 40, 45));
-        list.add(Arrays.asList(1200, 2900, -2950, -4280, 15000));
-        list.add(Arrays.asList(120, 2900, -3584, 4283, 150001));
-        list.add(Arrays.asList(14, -121, 3680, 4590, 15000000));
+//        List<List<Integer>> list = new ArrayList<>();
+//        list.add(Arrays.asList(1, 2, 3, 0, -1, 6, 123, 56789, 1235435435));
+//        list.add(Arrays.asList(36, 35, 34, 2123));
+//        list.add(Arrays.asList(145, 167, 312, 480, 512));
+//        list.add(Arrays.asList(20, 20, 30, 40, 45));
+//        list.add(Arrays.asList(1200, 2900, -2950, -4280, 15000));
+//        list.add(Arrays.asList(120, 2900, -3584, 4283, 150001));
+//        list.add(Arrays.asList(14, -121, 3680, 4590, 15000000));
+//        List<List<Integer>> midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
+//        List<Integer> result = mergeWithErrorValue(midResult.get(0), errorValueInteger);
 
-        List<List<Integer>> midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() /2, list.size()));
-        List<Integer> result = mergeWithErrorValue(midResult.get(0), errorValue);
+        List<List<String>> list = new ArrayList<>();
+        list.add(Arrays.asList("a", "fi", "ml", "nm", "zb"));
+        list.add(Arrays.asList("b", "bg", "cy", "deu", "ijt", "yutfd"));
+        list.add(Arrays.asList("s", "asd", "jkl", "yiyu"));
+//        list.add(Arrays.asList("qwe", "iuyui", "qweqw", "iuou", "cvxv"));
+//        list.add(Arrays.asList("10", "123", "dqwe", "qwd12v", "dasdv"));
+
+        List<List<String>> midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
+//        List<String> result = mergeWithErrorValue(midResult.get(0), errorValueString);
+
+
 
         System.out.println("Error Value");
-        errorValue.stream().forEach(System.out::println);
+        errorValueInteger.stream().forEach(System.out::println);
 
         System.out.println("Result Value");
-        for (int i = 0; i < result.size(); i++) {
+        for (int i = 0; i < midResult.get(0).size(); i++) {
             if (ORDERING.equals("ASC")) {
-                System.out.println(result.get(i));
-            } else System.out.println(result.get(result.size() - 1 - i));
+                System.out.println(midResult.get(0).get(i));
+            } else System.out.println(midResult.get(0).get(midResult.get(0).size() - 1 - i));
         }
-
-
-//        List<List<String>> listStr = new ArrayList<>();
-//        listStr.add(Arrays.asList("a", "b", "c", "d", "e"));
-//        listStr.add(Arrays.asList("asdsd", "asdds", "jklu", "yiyu"));
-//        listStr.add(Arrays.asList("qwe", "iuyui", "qweqw", "iuou", "cvxv"));
-//        listStr.add(Arrays.asList("10", "123", "dqwe", "qwd12v", "dasdv"));
-//
-//        List<List<String>> result = recursiveMergeString(listStr.subList(0, listStr.size() / 2), listStr.subList(listStr.size() /2, listStr.size()));
-//
-//        for (List<String> strings : result) {
-//            System.out.println(strings);
-//        }
 
     }
 
-    private static List<List<Integer>> recursiveMerge(List<List<Integer>> list1, List<List<Integer>> list2) {
+
+    private static <T> List<List<T>> recursiveMerge(List<List<T>> list1, List<List<T>> list2) {
 
         if (list1.size() == 1 && list2.size() == 1) {
+            List<List<T>> result = new ArrayList<>();
+            List<T> res = new ArrayList<>();
 
-            List<List<Integer>> result = new ArrayList<>();
-            List<Integer> res = new ArrayList<>();
-            int prevElementList1 = Integer.MIN_VALUE;
-            int prevElementList2 = Integer.MIN_VALUE;
-            int i = 0;
-            int j = 0;
-
-            try {
-
-                while (i <= list1.get(0).size() - 1 && j <= list2.get(0).size() - 1) {
-                    // создать метод compare для Стрингов и сравнивать массивы chars с помощью two pointers
-                    // также вставить дженерики
-
-                    // find error Value, add it in errorValue List, skip it.
-                    while (checkIsErrorValue(list1.get(0).get(i), prevElementList1)) {
-                        errorValue.add(list1.get(0).get(i++));
-                    }
-                    while (checkIsErrorValue(list2.get(0).get(j), prevElementList2)) {
-                        errorValue.add(list2.get(0).get(j++));
-                    }
-
-                    if (list1.get(0).get(i) <= list2.get(0).get(j)) {
-                        prevElementList1 = list1.get(0).get(i);
-                        res.add(list1.get(0).get(i++));
-                    } else {
-                        prevElementList2 = list2.get(0).get(j);
-                        res.add(list2.get(0).get(j++));
-                    }
-                }
-
-                while (i <= list1.get(0).size() - 1) {
-                    res.add(list1.get(0).get(i++));
-                }
-                while (j <= list2.get(0).size() - 1) {
-                    res.add(list2.get(0).get(j++));
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+            if (TYPEDATA.equals("INTEGER")) {
+                mergeIntegerValue(list1, list2, res);
+            } else mergeStringValue(list1, list2, res);
 
             result.add(res);
             return result;
         }
 
-        List<List<Integer>> res1 = list1.size() == 1 ? list1 :
+        List<List<T>> res1 = list1.size() == 1 ? list1 :
                 recursiveMerge(list1.subList(0, list1.size() / 2), list1.subList(list1.size() / 2, list1.size()));
-        List<List<Integer>> res2 = list2.size() == 1 ? list2 :
+        List<List<T>> res2 = list2.size() == 1 ? list2 :
                 recursiveMerge(list2.subList(0, list2.size() / 2), list2.subList(list2.size() / 2, list2.size()));
 
         return recursiveMerge(res1, res2);
+    }
+
+    private static <T> void mergeStringValue(List<List<T>> list1, List<List<T>> list2, List<T> res) {
+        String prevElementList1 = "";
+        String prevElementList2 = "";
+        int i = 0;
+        int j = 0;
+
+        try {
+            while (i <= list1.get(0).size() - 1 && j <= list2.get(0).size() - 1) {
+
+                // i and j вылазят за массив, если до конца списка плохие входные данные - обработать
+                while (checkIsErrorValue(list1.get(0).get(i), prevElementList1)) {
+                    errorValueString.add((String) list1.get(0).get(i++));
+                }
+                while (checkIsErrorValue(list2.get(0).get(j), prevElementList2)) {
+                    errorValueString.add((String) list2.get(0).get(j++));
+                }
+
+                if (compareString(list1.get(0).get(i), list2.get(0).get(j)) <= 0) {
+                    prevElementList1 = (String) list1.get(0).get(i);
+                    res.add(list1.get(0).get(i++));
+                } else {
+                    prevElementList2 = (String) list2.get(0).get(j);
+                    res.add(list2.get(0).get(j++));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage() + "        " + i + "    " + j);
+        }
+
+        while (i <= list1.get(0).size() - 1) {
+            res.add(list1.get(0).get(i++));
+        }
+        while (j <= list2.get(0).size() - 1) {
+            res.add(list2.get(0).get(j++));
+        }
+    }
+
+    private static <T> void mergeIntegerValue(List<List<T>> list1, List<List<T>> list2, List<T> res) {
+        int prevElementList1 = Integer.MIN_VALUE;
+        int prevElementList2 = Integer.MIN_VALUE;
+        int i = 0;
+        int j = 0;
+
+        try {
+            while (i <= list1.get(0).size() - 1 && j <= list2.get(0).size() - 1) {
+
+                // i and j вылазят за массив, если до конца списка плохие входные данные - обработать
+                while (checkIsErrorValue(list1.get(0).get(i), prevElementList1)) {
+                    errorValueInteger.add((Integer) list1.get(0).get(i++));
+                }
+                while (checkIsErrorValue(list2.get(0).get(j), prevElementList2)) {
+                    errorValueInteger.add((Integer) list2.get(0).get(j++));
+                }
+
+                if ((int) list1.get(0).get(i) <= (int) list2.get(0).get(j)) {
+                    prevElementList1 = (int) list1.get(0).get(i);
+                    res.add(list1.get(0).get(i++));
+                } else {
+                    prevElementList2 = (int) list2.get(0).get(j);
+                    res.add(list2.get(0).get(j++));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        while (i <= list1.get(0).size() - 1) {
+            res.add(list1.get(0).get(i++));
+        }
+        while (j <= list2.get(0).size() - 1) {
+            res.add(list2.get(0).get(j++));
+        }
     }
 
     private static List<Integer> mergeWithErrorValue(List<Integer> midResult, List<Integer> errorValue) {
@@ -130,16 +169,26 @@ public class Main {
         return result;
     }
 
-    private static boolean checkIsErrorValue(Integer num, int prevElementList) {
-        return prevElementList > num;
+    private static <T> boolean checkIsErrorValue(T element, T prevElementList) {
+        if (TYPEDATA.equals("INTEGER")) return (int) prevElementList > (int) element;
+        if ((TYPEDATA.equals("STRING")) && prevElementList.equals("")) return false;
+        return compareString(element, prevElementList) < 0;
     }
 
+    // lexicographical order
+    private static <T> int compareString(T element1, T element2) {
+        char[] first = ((String) element1).toCharArray();
+        char[] second = ((String) element2).toCharArray();
 
+        if (first.length < second.length) return -1;
+        if (first.length > second.length) return 1;
 
-
-
-
-
+        for (int i = 0; i < first.length; i++) {
+            if (first[i] < second[i]) return -1;
+            if (first[i] > second[i]) return 1;
+        }
+        return 0;
+    }
 
 
 }
