@@ -5,47 +5,48 @@ import java.util.*;
 public class Main {
 
     private static String ORDERING;
-    private static String TYPEDATA;
+    private static String DATA_TYPE;
     private static List<Integer> errorValueInteger = new ArrayList<>();
     private static List<String> errorValueString = new ArrayList<>();
 
     public static void main(String[] args) {
 
         ORDERING = "ASC";
-        TYPEDATA = "STRING";
+        DATA_TYPE = "INTEGER";
 
         // обработать если список только 1
-//        List<List<Integer>> list = new ArrayList<>();
-//        list.add(Arrays.asList(1, 2, 3, 0, -1, 6, 123, 56789, 1235435435));
-//        list.add(Arrays.asList(36, 35, 34, 2123));
-//        list.add(Arrays.asList(145, 167, 312, 480, 512));
-//        list.add(Arrays.asList(20, 20, 30, 40, 45));
-//        list.add(Arrays.asList(1200, 2900, -2950, -4280, 15000));
-//        list.add(Arrays.asList(120, 2900, -3584, 4283, 150001));
-//        list.add(Arrays.asList(14, -121, 3680, 4590, 15000000));
-//        List<List<Integer>> midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
-//        List<Integer> result = mergeWithErrorValue(midResult.get(0), errorValueInteger);
+        List<List<Integer>> list = new ArrayList<>();
+        list.add(Arrays.asList(1, 2, 3, 0, -1, 6, 123, 56789, 1235435435));
+        list.add(Arrays.asList(36, 35, 34, 2123));
+        list.add(Arrays.asList(145, 167, 312, 480, 512));
+        list.add(Arrays.asList(20, 20, 30, 40, 45));
+        list.add(Arrays.asList(1200, 2900, -2950, -4280, 15000));
+        list.add(Arrays.asList(120, 2900, -3584, 4283, 150001));
+        list.add(Arrays.asList(14, -121, 3680, 4590, 15000000));
+        List<List<Integer>> midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
+        List<Integer> result = mergeWithErrorValue(midResult.get(0), errorValueInteger);
 
-        List<List<String>> list = new ArrayList<>();
-        list.add(Arrays.asList("a", "fi", "ml", "nm", "zb"));
-        list.add(Arrays.asList("b", "bg", "cy", "deu", "ijt", "yutfd"));
-        list.add(Arrays.asList("s", "asd", "jkl", "yiyu"));
-//        list.add(Arrays.asList("qwe", "iuyui", "qweqw", "iuou", "cvxv"));
-//        list.add(Arrays.asList("10", "123", "dqwe", "qwd12v", "dasdv"));
-
-        List<List<String>> midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
+//        List<List<String>> list = new ArrayList<>();
+//        list.add(Arrays.asList("a", "fi", "ml", "nm", "zb"));
+//        list.add(Arrays.asList("b", "bg", "c", "deu", "ijt", "yutfd"));
+//        list.add(Arrays.asList("s", "asd", "jkl", "yi yu"));
+//        list.add(Arrays.asList("qwe", "iuyu", "qweqw", "iuough", "cvxvfghj"));
+//        list.add(Arrays.asList("10", "123", "dqwe", "qwd 12v", "dasdvwer"));
+//
+//        List<List<String>> midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
 //        List<String> result = mergeWithErrorValue(midResult.get(0), errorValueString);
 
 
 
         System.out.println("Error Value");
         errorValueInteger.stream().forEach(System.out::println);
+//        errorValueString.stream().forEach(System.out::println);
 
         System.out.println("Result Value");
-        for (int i = 0; i < midResult.get(0).size(); i++) {
+        for (int i = 0; i < result.size(); i++) {
             if (ORDERING.equals("ASC")) {
-                System.out.println(midResult.get(0).get(i));
-            } else System.out.println(midResult.get(0).get(midResult.get(0).size() - 1 - i));
+                System.out.println(result.get(i));
+            } else System.out.println(result.get(result.size() - 1 - i));
         }
 
     }
@@ -57,7 +58,7 @@ public class Main {
             List<List<T>> result = new ArrayList<>();
             List<T> res = new ArrayList<>();
 
-            if (TYPEDATA.equals("INTEGER")) {
+            if (DATA_TYPE.equals("INTEGER")) {
                 mergeIntegerValue(list1, list2, res);
             } else mergeStringValue(list1, list2, res);
 
@@ -99,7 +100,7 @@ public class Main {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage() + "        " + i + "    " + j);
+            System.out.println(e.getMessage());
         }
 
         while (i <= list1.get(0).size() - 1) {
@@ -147,17 +148,31 @@ public class Main {
         }
     }
 
-    private static List<Integer> mergeWithErrorValue(List<Integer> midResult, List<Integer> errorValue) {
+    private static <T> List<T> mergeWithErrorValue(List<T> midResult, List<T> errorValue) {
 
-        List<Integer> result = new ArrayList<>();
-        Collections.sort(errorValue);
+        List<T> result = new ArrayList<>();
+
+        Collections.sort(errorValue, new Comparator<T>() {
+            @Override
+            public int compare(T o1, T o2) {
+                if (DATA_TYPE.equals("INTEGER")) return (int) o1 - (int) o2;
+                return compareString(o1, o2);
+            }
+        });
+
         int i = 0;
         int j = 0;
 
         while (i <= midResult.size() - 1 && j <= errorValue.size() - 1) {
-            if (midResult.get(i) <= errorValue.get(j)) {
-                result.add(midResult.get(i++));
-            } else result.add(errorValue.get(j++));
+            if (DATA_TYPE.equals("INTEGER")) {
+                if ((int) midResult.get(i) <= (int) errorValue.get(j)) {
+                    result.add(midResult.get(i++));
+                } else result.add(errorValue.get(j++));
+            } else {
+                if (compareString(midResult.get(i), errorValue.get(j)) <= 0) {
+                    result.add(midResult.get(i++));
+                } else result.add(errorValue.get(j++));
+            }
         }
 
         while (i <= midResult.size() - 1) {
@@ -170,9 +185,16 @@ public class Main {
     }
 
     private static <T> boolean checkIsErrorValue(T element, T prevElementList) {
-        if (TYPEDATA.equals("INTEGER")) return (int) prevElementList > (int) element;
-        if ((TYPEDATA.equals("STRING")) && prevElementList.equals("")) return false;
+        if (DATA_TYPE.equals("INTEGER")) return (int) prevElementList > (int) element;
+        if (DATA_TYPE.equals("STRING") && checkHasWhitespace(element)) return true;
+        if ((DATA_TYPE.equals("STRING")) && prevElementList.equals("")) return false;
         return compareString(element, prevElementList) < 0;
+    }
+
+    private static <T> boolean checkHasWhitespace(T element) {
+        char[] chars = ((String) element).toCharArray();
+        for (char c : chars) if (c == ' ') return true;
+        return false;
     }
 
     // lexicographical order
