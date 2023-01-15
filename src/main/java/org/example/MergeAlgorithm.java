@@ -8,13 +8,15 @@ import java.util.List;
 public class MergeAlgorithm <T> {
     private List<List<T>> midResult = new ArrayList<>();
     private List<T> result = new ArrayList<>();
-    private List<T> errorValueInteger = new ArrayList<>();
-    private List<T> errorValueString = new ArrayList<>();
+    private final List<T> errorValueInteger = new ArrayList<>();
+    private final List<T> errorValueString = new ArrayList<>();
 
     public void runMerge(List<List<T>> list) {
         midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
-        result = mergeWithErrorValue(midResult.get(0), errorValueInteger);
-//      result = mergeWithErrorValue(midResult.get(0), errorValueString);
+
+        // убрать костыли
+        if (Utils.getDataType().equals("INTEGER")) result = mergeWithErrorValue(midResult.get(0), errorValueInteger);
+            else result = mergeWithErrorValue(midResult.get(0), errorValueString);
     }
 
 
@@ -49,13 +51,16 @@ public class MergeAlgorithm <T> {
         try {
             while (i <= list1.get(0).size() - 1 && j <= list2.get(0).size() - 1) {
 
-                // i and j вылазят за массив, если до конца списка плохие входные данные - обработать
-                while (checkIsErrorValue(list1.get(0).get(i), prevElementList1)) {
+                while (i <= list1.get(0).size() - 1 &&
+                        checkIsErrorValue(list1.get(0).get(i), prevElementList1)) {
                     errorValueString.add(list1.get(0).get(i++));
                 }
-                while (checkIsErrorValue(list2.get(0).get(j), prevElementList2)) {
+                while (j <= list2.get(0).size() - 1 &&
+                        checkIsErrorValue(list2.get(0).get(j), prevElementList2)) {
                     errorValueString.add(list2.get(0).get(j++));
                 }
+
+                if (i > list1.get(0).size() - 1 || j > list2.get(0).size() - 1) break;
 
                 if (compareString(list1.get(0).get(i), list2.get(0).get(j)) <= 0) {
                     prevElementList1 = (String) list1.get(0).get(i);
@@ -66,7 +71,9 @@ public class MergeAlgorithm <T> {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getMessage() + "    " +   i + "   " + j);
+            System.out.println(prevElementList1);
+            System.out.println(prevElementList2);
         }
 
         while (i <= list1.get(0).size() - 1) {
@@ -86,13 +93,16 @@ public class MergeAlgorithm <T> {
         try {
             while (i <= list1.get(0).size() - 1 && j <= list2.get(0).size() - 1) {
 
-                // i and j вылазят за массив, если до конца списка плохие входные данные - обработать
-                while (checkIsErrorValue(list1.get(0).get(i), prevElementList1)) {
+                while (i <= list1.get(0).size() - 1 &&
+                        checkIsErrorValue(list1.get(0).get(i), prevElementList1)) {
                     errorValueInteger.add(list1.get(0).get(i++));
                 }
-                while (checkIsErrorValue(list2.get(0).get(j), prevElementList2)) {
+                while (j <= list2.get(0).size() - 1 &&
+                        checkIsErrorValue(list2.get(0).get(j), prevElementList2)) {
                     errorValueInteger.add(list2.get(0).get(j++));
                 }
+
+                if (i > list1.get(0).size() - 1 || j > list2.get(0).size() - 1) break;
 
                 if ((int) list1.get(0).get(i) <= (int) list2.get(0).get(j)) {
                     prevElementList1 = (int) list1.get(0).get(i);
@@ -118,7 +128,7 @@ public class MergeAlgorithm <T> {
 
         List<T> result = new ArrayList<>();
 
-        Collections.sort(errorValue, new Comparator<T>() {
+        errorValue.sort(new Comparator<T>() {
             @Override
             public int compare(T o1, T o2) {
                 if (Utils.getDataType().equals("INTEGER")) return (int) o1 - (int) o2;

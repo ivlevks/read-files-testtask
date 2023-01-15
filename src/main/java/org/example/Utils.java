@@ -1,7 +1,7 @@
 package org.example;
 
 public class Utils {
-    private static String ORDERING;
+    private static String ORDERING = "ASC";
     private static String DATA_TYPE;
 
     public static String getORDERING() {
