@@ -6,10 +6,12 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MergeAlgorithm <T> {
+
     private List<List<T>> midResult = new ArrayList<>();
     private List<T> result = new ArrayList<>();
     private final List<T> errorValueInteger = new ArrayList<>();
     private final List<T> errorValueString = new ArrayList<>();
+
 
     public void runMerge(List<List<T>> list) {
         midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
@@ -42,7 +44,9 @@ public class MergeAlgorithm <T> {
         return recursiveMerge(res1, res2);
     }
 
+
     private void mergeStringValue(List<List<T>> list1, List<List<T>> list2, List<T> res) {
+
         String prevElementList1 = "";
         String prevElementList2 = "";
         int i = 0;
@@ -84,7 +88,9 @@ public class MergeAlgorithm <T> {
         }
     }
 
+
     private void mergeIntegerValue(List<List<T>> list1, List<List<T>> list2, List<T> res) {
+
         int prevElementList1 = Integer.MIN_VALUE;
         int prevElementList2 = Integer.MIN_VALUE;
         int i = 0;
@@ -124,6 +130,7 @@ public class MergeAlgorithm <T> {
         }
     }
 
+
     private List<T> mergeWithErrorValue(List<T> midResult, List<T> errorValue) {
 
         List<T> result = new ArrayList<>();
@@ -138,7 +145,6 @@ public class MergeAlgorithm <T> {
 
         int i = 0;
         int j = 0;
-
         while (i <= midResult.size() - 1 && j <= errorValue.size() - 1) {
             if (Utils.getDataType().equals("INTEGER")) {
                 if ((int) midResult.get(i) <= (int) errorValue.get(j)) {
@@ -160,21 +166,23 @@ public class MergeAlgorithm <T> {
         return result;
     }
 
-    private static <T> boolean checkIsErrorValue(T element, T prevElementList) {
+
+    private <T> boolean checkIsErrorValue(T element, T prevElementList) {
         if (Utils.getDataType().equals("INTEGER")) return (int) prevElementList > (int) element;
         if (Utils.getDataType().equals("STRING") && checkHasWhitespace(element)) return true;
         if ((Utils.getDataType().equals("STRING")) && prevElementList.equals("")) return false;
         return compareString(element, prevElementList) < 0;
     }
 
-    private static <T> boolean checkHasWhitespace(T element) {
+
+    private <T> boolean checkHasWhitespace(T element) {
         char[] chars = ((String) element).toCharArray();
         for (char c : chars) if (c == ' ') return true;
         return false;
     }
 
     // lexicographical order
-    private static <T> int compareString(T element1, T element2) {
+    private <T> int compareString(T element1, T element2) {
         char[] first = ((String) element1).toCharArray();
         char[] second = ((String) element2).toCharArray();
 
@@ -187,6 +195,7 @@ public class MergeAlgorithm <T> {
         }
         return 0;
     }
+
 
     public List<T> getResult() {
         return result;
