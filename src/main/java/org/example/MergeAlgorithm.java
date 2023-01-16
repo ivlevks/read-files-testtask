@@ -71,16 +71,25 @@ public class MergeAlgorithm <T> {
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage() + "    " +   i + "   " + j);
-            System.out.println(prevElementList1);
-            System.out.println(prevElementList2);
+            System.out.println(e.getMessage());
         }
 
         while (i <= list1.get(0).size() - 1) {
-            res.add(list1.get(0).get(i++));
+            if (checkIsErrorValue(list1.get(0).get(i), prevElementList1)) {
+                errorValueString.add(list1.get(0).get(i++));
+            } else {
+                prevElementList1 = (String) list1.get(0).get(i);
+                res.add(list1.get(0).get(i++));
+            }
+
         }
         while (j <= list2.get(0).size() - 1) {
-            res.add(list2.get(0).get(j++));
+            if (checkIsErrorValue(list2.get(0).get(j), prevElementList2)) {
+                errorValueString.add(list2.get(0).get(j++));
+            } else {
+                prevElementList2 = (String) list2.get(0).get(j);
+                res.add(list2.get(0).get(j++));
+            }
         }
     }
 
@@ -118,10 +127,21 @@ public class MergeAlgorithm <T> {
         }
 
         while (i <= list1.get(0).size() - 1) {
-            res.add(list1.get(0).get(i++));
+            if (checkIsErrorValue(list1.get(0).get(i), prevElementList1)) {
+                errorValueInteger.add(list1.get(0).get(i++));
+            } else {
+                prevElementList1 = (int) list1.get(0).get(i);
+                res.add(list1.get(0).get(i++));
+            }
         }
+
         while (j <= list2.get(0).size() - 1) {
-            res.add(list2.get(0).get(j++));
+            if (checkIsErrorValue(list2.get(0).get(j), prevElementList2)) {
+                errorValueInteger.add(list2.get(0).get(j++));
+            } else {
+                prevElementList2 = (int) list2.get(0).get(j);
+                res.add(list2.get(0).get(j++));
+            }
         }
     }
 
@@ -162,10 +182,20 @@ public class MergeAlgorithm <T> {
 
 
     private <T> boolean checkIsErrorValue(T element, T prevElementList) {
-        if (Utils.getDataType().equals("INTEGER")) return (int) prevElementList > (int) element;
-        if (Utils.getDataType().equals("STRING") && checkHasWhitespace(element)) return true;
+        if (Utils.getDataType().equals("INTEGER") && (int) prevElementList > (int) element) {
+            System.out.println("Line has not sorted " + Utils.getDataType() + " value - " + element);
+            return true;
+        }
         if ((Utils.getDataType().equals("STRING")) && prevElementList.equals("")) return false;
-        return compareString(element, prevElementList) < 0;
+        if (Utils.getDataType().equals("STRING") && checkHasWhitespace(element)) {
+            System.out.println("Line has whitespace character - " + element);
+            return true;
+        }
+        if (Utils.getDataType().equals("STRING") && (compareString(element, prevElementList) < 0)) {
+            System.out.println("Line has not sorted " + Utils.getDataType() + " value - " + element);
+            return true;
+        }
+        return false;
     }
 
 

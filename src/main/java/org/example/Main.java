@@ -9,13 +9,13 @@ public class Main {
         Utils utils = new Utils();
         utils.setParameters(args);
 
-        List<List<?>> listDataAllFiles = new ArrayList<>();
+        List<List<Object>> listDataAllFiles = new ArrayList<>();
         utils.readFiles(listDataAllFiles);
 
         MergeAlgorithm mergeAlgorithm = new MergeAlgorithm();
         mergeAlgorithm.runMerge(listDataAllFiles);
 
-        List<?> result = mergeAlgorithm.getResult();
+        List<Object> result = mergeAlgorithm.getResult();
         utils.writeData(result);
     }
 
