@@ -6,15 +6,13 @@ import java.util.Comparator;
 import java.util.List;
 
 public class MergeAlgorithm <T> {
-
-    private List<List<T>> midResult = new ArrayList<>();
     private List<T> result = new ArrayList<>();
     private final List<T> errorValueInteger = new ArrayList<>();
     private final List<T> errorValueString = new ArrayList<>();
 
 
     public void runMerge(List<List<T>> list) {
-        midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
+        List<List<T>> midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
 
         // убрать костыли
         if (Utils.getDataType().equals("INTEGER")) result = mergeWithErrorValue(midResult.get(0), errorValueInteger);
@@ -23,7 +21,6 @@ public class MergeAlgorithm <T> {
 
 
     private List<List<T>> recursiveMerge(List<List<T>> list1, List<List<T>> list2) {
-
         if (list1.size() == 1 && list2.size() == 1) {
             List<List<T>> result = new ArrayList<>();
             List<T> res = new ArrayList<>();
@@ -46,7 +43,6 @@ public class MergeAlgorithm <T> {
 
 
     private void mergeStringValue(List<List<T>> list1, List<List<T>> list2, List<T> res) {
-
         String prevElementList1 = "";
         String prevElementList2 = "";
         int i = 0;
@@ -90,7 +86,6 @@ public class MergeAlgorithm <T> {
 
 
     private void mergeIntegerValue(List<List<T>> list1, List<List<T>> list2, List<T> res) {
-
         int prevElementList1 = Integer.MIN_VALUE;
         int prevElementList2 = Integer.MIN_VALUE;
         int i = 0;
@@ -132,7 +127,6 @@ public class MergeAlgorithm <T> {
 
 
     private List<T> mergeWithErrorValue(List<T> midResult, List<T> errorValue) {
-
         List<T> result = new ArrayList<>();
 
         errorValue.sort(new Comparator<T>() {
@@ -200,15 +194,4 @@ public class MergeAlgorithm <T> {
     public List<T> getResult() {
         return result;
     }
-
-    public List<T> getErrorValueInteger() {
-        return errorValueInteger;
-    }
-
-    public List<T> getErrorValueString() {
-        return errorValueString;
-    }
-
-
-
 }
