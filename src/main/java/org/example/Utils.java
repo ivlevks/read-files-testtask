@@ -41,18 +41,17 @@ public class Utils {
         }
     }
 
-
     public void readFiles(List<List<Object>> list) {
         ClassLoader loader = Main.class.getClassLoader();
-        String path = loader.getResource("org/example/Main.class").getPath();
-        path = path.substring(0, (path).length() - 37);
 
         for (String in : inputFileName) {
             List<Object> midList = new ArrayList<>();
-            StringBuilder pathToRead = new StringBuilder(path);
-            pathToRead.append(in);
 
-            try (BufferedReader br = new BufferedReader(new FileReader(pathToRead.toString(), StandardCharsets.UTF_8), size)) {
+            try (InputStream inputStream = this.getClass()
+                    .getClassLoader().getResourceAsStream(in);
+                BufferedReader br = new BufferedReader(
+                        new InputStreamReader(inputStream, StandardCharsets.UTF_8), size)) {
+
                 long LINES_TO_READ = 10_000_000;
                 br.lines().limit(LINES_TO_READ).forEach(s -> {
                     try {
@@ -75,6 +74,42 @@ public class Utils {
             list.add(midList);
         }
     }
+
+
+//    public void readFiles(List<List<Object>> list) {
+//        ClassLoader loader = Main.class.getClassLoader();
+//        String path = loader.getResource("org/example/Main.class").getPath();
+//        path = path.substring(0, (path).length() - 37);
+//
+//
+//        for (String in : inputFileName) {
+//            List<Object> midList = new ArrayList<>();
+//            StringBuilder pathToRead = new StringBuilder(path);
+//            pathToRead.append(in);
+//
+//            try (BufferedReader br = new BufferedReader(new FileReader(pathToRead.toString(), StandardCharsets.UTF_8), size)) {
+//                long LINES_TO_READ = 10_000_000;
+//                br.lines().limit(LINES_TO_READ).forEach(s -> {
+//                    try {
+//                        if (s.length() != 0) {
+//                            if (DATA_TYPE.equals("INTEGER")) {
+//                                int num = Integer.parseInt(s);
+//                                midList.add(num);
+//                            } else {
+//                                midList.add(s);
+//                            }
+//                        }
+//                    } catch (NumberFormatException e) {
+//                        System.out.println(e.getMessage() + " invalid value for " + DATA_TYPE +
+//                                ". No possible compare. This value will lost.");
+//                    }
+//                });
+//            } catch (IOException e) {
+//                System.out.println(e.getMessage());
+//            }
+//            list.add(midList);
+//        }
+//    }
 
     public void writeData(List<Object> result) {
         try (BufferedWriter wr = new BufferedWriter(new FileWriter(outFileName, StandardCharsets.UTF_8), size)) {
