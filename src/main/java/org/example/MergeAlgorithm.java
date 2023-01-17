@@ -1,8 +1,8 @@
 package org.example;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class MergeAlgorithm <T> {
@@ -10,13 +10,15 @@ public class MergeAlgorithm <T> {
     private final List<T> errorValueInteger = new ArrayList<>();
     private final List<T> errorValueString = new ArrayList<>();
 
-
     public void runMerge(List<List<T>> list) {
-        List<List<T>> midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
+        if (!list.isEmpty()) {
+            List<List<T>> midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
 
-        // убрать костыли
-        if (Utils.getDataType().equals("INTEGER")) result = mergeWithErrorValue(midResult.get(0), errorValueInteger);
+            if (Utils.getDataType().equals("INTEGER")) result = mergeWithErrorValue(midResult.get(0), errorValueInteger);
             else result = mergeWithErrorValue(midResult.get(0), errorValueString);
+
+            if (Utils.getDataType().equals("INTEGER") && !Utils.getBigIntegers().isEmpty()) mergeWithBigIntegers();
+        }
     }
 
 
@@ -149,12 +151,9 @@ public class MergeAlgorithm <T> {
     private List<T> mergeWithErrorValue(List<T> midResult, List<T> errorValue) {
         List<T> result = new ArrayList<>();
 
-        errorValue.sort(new Comparator<T>() {
-            @Override
-            public int compare(T o1, T o2) {
-                if (Utils.getDataType().equals("INTEGER")) return (int) o1 - (int) o2;
-                return compareString(o1, o2);
-            }
+        errorValue.sort((o1, o2) -> {
+            if (Utils.getDataType().equals("INTEGER")) return (int) o1 - (int) o2;
+            return compareString(o1, o2);
         });
 
         int i = 0;
@@ -178,6 +177,20 @@ public class MergeAlgorithm <T> {
             result.add(errorValue.get(j++));
         }
         return result;
+    }
+
+    private void mergeWithBigIntegers() {
+        List<BigInteger> list = Utils.getBigIntegers();
+        Collections.sort(list);
+
+        int pos = 0;
+        for (BigInteger bigInteger : list) {
+            if (bigInteger.compareTo(BigInteger.ZERO) < 0) {
+                result.add(pos++, (T) bigInteger);
+            } else {
+                result.add(result.size(), (T) bigInteger);
+            }
+        }
     }
 
 
@@ -219,7 +232,6 @@ public class MergeAlgorithm <T> {
         }
         return 0;
     }
-
 
     public List<T> getResult() {
         return result;
