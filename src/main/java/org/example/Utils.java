@@ -9,7 +9,7 @@ import java.util.List;
 public class Utils {
     private static String ORDERING = "ASC";
     private static String DATA_TYPE;
-    private final int size = 1024 * 1024;
+    private final int bufferSize = 1024 * 1024;
     private final List<String> inputFileName = new ArrayList<>();
     private String outFileName = null;
     private static final List<BigInteger> bigIntegers = new ArrayList<>();
@@ -49,7 +49,7 @@ public class Utils {
 
             if (inputStream != null) {
                 try (BufferedReader br = new BufferedReader(
-                        new InputStreamReader(inputStream, StandardCharsets.UTF_8), size)) {
+                        new InputStreamReader(inputStream, StandardCharsets.UTF_8), bufferSize)) {
 
                     long LINES_TO_READ = 10_000_000;
                     br.lines().limit(LINES_TO_READ).forEach(s -> {
@@ -87,7 +87,7 @@ public class Utils {
 
 
     public void writeData(List<Object> result) {
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(outFileName, StandardCharsets.UTF_8), size)) {
+        try (BufferedWriter wr = new BufferedWriter(new FileWriter(outFileName, StandardCharsets.UTF_8), bufferSize)) {
             for (int i = 0; i < result.size(); i++) {
                 if (ORDERING.equals("ASC")) {
                     wr.write(result.get(i).toString());
