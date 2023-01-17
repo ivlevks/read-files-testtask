@@ -1,5 +1,6 @@
 package org.example;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,13 +11,13 @@ public class MergeAlgorithm <T> {
     private final List<T> errorValueInteger = new ArrayList<>();
     private final List<T> errorValueString = new ArrayList<>();
 
-
     public void runMerge(List<List<T>> list) {
         List<List<T>> midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
 
-        // убрать костыли
         if (Utils.getDataType().equals("INTEGER")) result = mergeWithErrorValue(midResult.get(0), errorValueInteger);
             else result = mergeWithErrorValue(midResult.get(0), errorValueString);
+
+        if (Utils.getDataType().equals("INTEGER") && !Utils.getBigIntegers().isEmpty()) mergeWithBigIntegers();
     }
 
 
@@ -180,6 +181,20 @@ public class MergeAlgorithm <T> {
         return result;
     }
 
+    private void mergeWithBigIntegers() {
+        List<BigInteger> list = Utils.getBigIntegers();
+        Collections.sort(list);
+
+        int pos = 0;
+        for (BigInteger bigInteger : list) {
+            if (bigInteger.compareTo(BigInteger.ZERO) == -1) {
+                result.add(pos++, (T) bigInteger);
+            } else {
+                result.add(result.size(), (T) bigInteger);
+            }
+        }
+    }
+
 
     private <T> boolean checkIsErrorValue(T element, T prevElementList) {
         if (Utils.getDataType().equals("INTEGER") && (int) prevElementList > (int) element) {
@@ -219,7 +234,6 @@ public class MergeAlgorithm <T> {
         }
         return 0;
     }
-
 
     public List<T> getResult() {
         return result;

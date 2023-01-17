@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -15,6 +16,7 @@ public class Utils {
     private final CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder();
     private final List<String> inputFileName = new ArrayList<>();
     private String outFileName = null;
+    private static final List<BigInteger> bigIntegers = new ArrayList<>();
 
 
     public void setParameters(String[] args) {
@@ -41,6 +43,7 @@ public class Utils {
         }
     }
 
+
     public void readFiles(List<List<Object>> list) {
         ClassLoader loader = Main.class.getClassLoader();
 
@@ -57,14 +60,18 @@ public class Utils {
                     try {
                         if (s.length() != 0) {
                             if (DATA_TYPE.equals("INTEGER")) {
-                                int num = Integer.parseInt(s);
-                                midList.add(num);
+                                try {
+                                    int num = Integer.parseInt(s);
+                                    midList.add(num);
+                                } catch (NumberFormatException m) {
+                                    bigIntegers.add(new BigInteger(s));
+                                }
                             } else {
                                 midList.add(s);
                             }
                         }
                     } catch (NumberFormatException e) {
-                        System.out.println(e.getMessage() + " invalid value for " + DATA_TYPE +
+                        System.out.println(e.getMessage() + ": " + s +  " invalid value for " + DATA_TYPE +
                                 ". No possible compare. This value will lost.");
                     }
                 });
@@ -75,41 +82,6 @@ public class Utils {
         }
     }
 
-
-//    public void readFiles(List<List<Object>> list) {
-//        ClassLoader loader = Main.class.getClassLoader();
-//        String path = loader.getResource("org/example/Main.class").getPath();
-//        path = path.substring(0, (path).length() - 37);
-//
-//
-//        for (String in : inputFileName) {
-//            List<Object> midList = new ArrayList<>();
-//            StringBuilder pathToRead = new StringBuilder(path);
-//            pathToRead.append(in);
-//
-//            try (BufferedReader br = new BufferedReader(new FileReader(pathToRead.toString(), StandardCharsets.UTF_8), size)) {
-//                long LINES_TO_READ = 10_000_000;
-//                br.lines().limit(LINES_TO_READ).forEach(s -> {
-//                    try {
-//                        if (s.length() != 0) {
-//                            if (DATA_TYPE.equals("INTEGER")) {
-//                                int num = Integer.parseInt(s);
-//                                midList.add(num);
-//                            } else {
-//                                midList.add(s);
-//                            }
-//                        }
-//                    } catch (NumberFormatException e) {
-//                        System.out.println(e.getMessage() + " invalid value for " + DATA_TYPE +
-//                                ". No possible compare. This value will lost.");
-//                    }
-//                });
-//            } catch (IOException e) {
-//                System.out.println(e.getMessage());
-//            }
-//            list.add(midList);
-//        }
-//    }
 
     public void writeData(List<Object> result) {
         try (BufferedWriter wr = new BufferedWriter(new FileWriter(outFileName, StandardCharsets.UTF_8), size)) {
@@ -135,5 +107,7 @@ public class Utils {
         return DATA_TYPE;
     }
 
-
+    public static List<BigInteger> getBigIntegers() {
+        return bigIntegers;
+    }
 }
