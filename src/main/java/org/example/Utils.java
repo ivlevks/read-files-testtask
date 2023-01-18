@@ -67,7 +67,7 @@ public class Utils {
                                 }
                             }
                         } catch (NumberFormatException e) {
-                            System.out.println(e.getMessage() + ": " + s +  " invalid value for " + DATA_TYPE +
+                            System.out.println(e.getMessage() + ": " + s + " invalid value for " + DATA_TYPE +
                                     ". No possible compare. This value will lost.");
                         }
                     });
