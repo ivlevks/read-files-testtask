@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MergeAlgorithm <T> {
+public class MergeAlgorithm<T> {
     private List<T> result = new ArrayList<>();
     private final List<T> errorValueInteger = new ArrayList<>();
     private final List<T> errorValueString = new ArrayList<>();
@@ -14,7 +14,8 @@ public class MergeAlgorithm <T> {
         if (!list.isEmpty()) {
             List<List<T>> midResult = recursiveMerge(list.subList(0, list.size() / 2), list.subList(list.size() / 2, list.size()));
 
-            if (Utils.getDataType().equals("INTEGER")) result = mergeWithErrorValue(midResult.get(0), errorValueInteger);
+            if (Utils.getDataType().equals("INTEGER"))
+                result = mergeWithErrorValue(midResult.get(0), errorValueInteger);
             else result = mergeWithErrorValue(midResult.get(0), errorValueString);
 
             if (Utils.getDataType().equals("INTEGER") && !Utils.getBigIntegers().isEmpty()) mergeWithBigIntegers();
