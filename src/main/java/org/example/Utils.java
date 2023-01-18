@@ -87,18 +87,21 @@ public class Utils {
 
 
     public void writeData(List<Object> result) {
-        try (BufferedWriter wr = new BufferedWriter(new FileWriter(outFileName, StandardCharsets.UTF_8), bufferSize)) {
-            for (int i = 0; i < result.size(); i++) {
-                if (ORDERING.equals("ASC")) {
-                    wr.write(result.get(i).toString());
-                    wr.newLine();
-                } else {
-                    wr.write(result.get(result.size() - 1 - i).toString());
-                    wr.newLine();
+        if (outFileName == null) System.out.println("Out file name not found");
+        else {
+            try (BufferedWriter wr = new BufferedWriter(new FileWriter(outFileName, StandardCharsets.UTF_8), bufferSize)) {
+                for (int i = 0; i < result.size(); i++) {
+                    if (ORDERING.equals("ASC")) {
+                        wr.write(result.get(i).toString());
+                        wr.newLine();
+                    } else {
+                        wr.write(result.get(result.size() - 1 - i).toString());
+                        wr.newLine();
+                    }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
